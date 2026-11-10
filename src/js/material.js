@@ -1,8 +1,9 @@
-// 本机扩展：兼容 MkDocs Material（pymdownx）语法
+// Local extension: MkDocs Material (pymdownx) syntax support
 //
-// MPE 没有 markdown-it 插件入口，只有解析前后两个字符串钩子，运行在 QuickJS 沙箱里。
-// 解析前把 ??? 和 === 改写成内置 !!! 容器，让内置插件解析缩进正文；解析后再换成折叠块和选项卡。
-// 解析前的改写必须逐行一一对应：滚动同步和勾选框写回源文件都依赖行号。
+// MPE has no markdown-it plugin entry point, only two string hooks around parsing, running in a QuickJS sandbox.
+// Before parsing, ??? and === are rewritten into the built-in !!! container so its plugin parses the indented body.
+// After parsing, those containers become collapsible blocks and tabs.
+// The pre-parse rewrite must stay strictly line-for-line: scroll sync and checkbox write-back depend on line numbers.
 
 const COLLAPSED = "\uE100";
 const OPEN = "\uE101";
@@ -19,7 +20,7 @@ const icons = new Map(Object.entries(data.icons));
 const fenceLine = /^\s*(`{3,}(?=[^`]*$)|~{3,})(.*)$/;
 const headingLine = /^\s{0,3}#{1,6}\s/;
 const admonitionLine = /^(\s*)!!!\s+([\w-]+)(?:\s+[\w-]+)*\s+"(.*)"\s*$/;
-// pymdownx 把 ???- 的 "-" 当成 class，效果是默认折叠，站点上也是如此
+// pymdownx treats the "-" in ???- as a class, so the block ends up collapsed, on the site as well
 const detailsLine =
   /^(\s*)\?\?\?([+-]?)\s*(?:([\w-]+)(?:\s+[\w-]+)*)?\s*(?:"(.*)")?\s*$/;
 const tabLine = /^(\s*)===(\+?)\s+"(.*)"\s*$/;
@@ -81,7 +82,7 @@ function preprocess(markdown) {
         return line;
       }
 
-      // 侧边目录直接取标题文本，不经过解析后的钩子，所以标题里的前缀要在这里去掉
+      // The sidebar TOC takes heading text directly and skips the post-parse hook, so strip the prefix here
       if (headingLine.test(line)) {
         return line.replace(/`#!\w+ /g, "`");
       }
@@ -228,7 +229,7 @@ function token(kind, text) {
   return `<span class="token ${kind}">${text}</span>`;
 }
 
-// 沙箱里没有 Prism；token 类名和代码块一致，颜色跟随 Prism 主题
+// Prism is not available in the sandbox; token class names match code blocks, so colors follow the Prism theme
 function highlightPython(code) {
   return code.replace(pythonToken, (text, offset) => {
     if (text[0] === "&") {
@@ -253,7 +254,7 @@ function highlightPython(code) {
   });
 }
 
-// 不加 language-* 类名：Prism 主题会给行内代码加背景和圆角，和其他行内代码不一致
+// No language-* class: Prism themes would add a background and rounded corners, unlike other inline code
 function rewriteInlineCode(html) {
   const pattern = /<pre\b[\s\S]*?<\/pre>|<code>#!([\w+#.-]+) ([\s\S]*?)<\/code>/gi;
 
@@ -282,7 +283,7 @@ function renderKeys(names) {
     return keyLabels.get(keyAliases.get(name) || name);
   });
 
-  // 和 pymdownx 一样，只要有一个键名不认识，就保持原文
+  // Like pymdownx, keep the original text if any key name is unknown
   if (labels.includes(undefined)) {
     return null;
   }
@@ -291,7 +292,7 @@ function renderKeys(names) {
   return `<span class="keys">${keys}</span>`;
 }
 
-// 只改文本节点：跳过标签本身、代码，以及 KaTeX 用来保存公式原文的 annotation
+// Text nodes only: skip tags, code, and the annotation element where KaTeX stores the formula source
 function rewriteInlineText(html) {
   const pattern =
     /<(pre|code|script|style|annotation|svg)\b[\s\S]*?<\/\1>|<[^>]+>|\+\+([\w-]+(?:\+[\w-]+)*?)\+\+|:((?:material|fontawesome|octicons|simple)-[\w-]+):/gi;
@@ -309,7 +310,7 @@ function rewriteInlineText(html) {
   });
 }
 
-// 钩子抛错或超时，MPE 会静默退回默认钩子，标题编号和表格增强也会一起失效
+// If a hook throws or times out, MPE silently falls back to the default hooks, losing heading numbers and table enhancements too
 function guarded(step, input) {
   try {
     return step(input);

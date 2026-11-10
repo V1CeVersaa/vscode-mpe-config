@@ -1,6 +1,6 @@
-// 本机覆盖：上游 vscode-mpe-config 之外的调整
+// Local overrides on top of upstream vscode-mpe-config
 
-// 预览底色，只改这一行：暖纸色 #faf4f0，纯白 #ffffff
+// Preview background, the only line to change: warm paper #faf4f0, pure white #ffffff
 @local-paper: #faf4f0;
 
 @local-ink: #1f1b16;
@@ -9,15 +9,15 @@
 @local-code-bg: mix(#000, @local-paper, 5%);
 @local-line: mix(#000, @local-paper, 14%);
 
-// 本机没有 FZYaSong-R-GBK，上游字体栈也没有通用兜底，中文正文会落到系统黑体
-// 这里接上思源宋体（上游本来就用它做全角括号）；以后装了方正雅宋会自动优先
+// FZYaSong-R-GBK is not installed here and the upstream stack has no generic fallback, so CJK text would use a sans-serif system font
+// Fall back to Source Han Serif, which upstream already uses for full-width brackets; FZYaSong wins once installed
 .markdown-preview.markdown-preview {
   font-family: "Iowan Old Style", "MPE CJK Brackets", "FZYaSong-R-GBK",
     "Source Han Serif SC", serif;
 }
 
-// 浅色配色：取代上游的深色 vscode-colors.less（style.less 里已注释掉）
-// 只作用于 VS Code 预览，导出 HTML / PDF 不受影响
+// Light palette, replacing upstream's dark vscode-colors.less (commented out in style.less)
+// Applies to the VS Code preview only; HTML and PDF exports are unaffected
 @media screen {
   body:has(.markdown-preview[data-for="preview"]) {
     background-color: @local-paper;
@@ -28,7 +28,7 @@
     background-color: @local-paper;
     color: @local-ink;
 
-    // vue.css 的蓝灰标题、绿链接、灰斜体和冷灰引用块在暖底上不协调，对比度也偏低
+    // The blue-gray headings, green links, gray italics and cool-gray blockquotes of vue.css clash with the warm background and lack contrast
     :is(h1, h2, h3, h4, h5, strong, dt, th):not(.mermaid *) {
       color: @local-ink;
     }
@@ -47,7 +47,7 @@
       border-left-color: @local-line;
     }
 
-    // vue.css 的隔行浅底和线条是冷灰色
+    // The zebra stripes and rules of vue.css are cool gray
     hr {
       border-bottom-color: @local-line;
     }
@@ -65,7 +65,7 @@
       background-color: @local-code-bg;
     }
 
-    // Prism default.css 的运算符白底和白色文字阴影，在带底色的代码块上会发脏
+    // The white operator background and white text shadow of Prism default.css look dirty on a tinted code block
     :is(code, pre) {
       text-shadow: none;
     }
@@ -76,7 +76,7 @@
   }
 }
 
-// MkDocs Material 语法的样式，配合 src/js/material.js
+// Styles for MkDocs Material syntax, used with src/js/material.js
 .markdown-preview.markdown-preview {
   details.admonition > summary.admonition-title {
     position: relative;
