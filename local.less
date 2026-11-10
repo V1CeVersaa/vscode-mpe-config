@@ -1,6 +1,6 @@
 // Local overrides on top of upstream vscode-mpe-config
 
-// Preview background, the only line to change: warm paper #faf4f0, pure white #ffffff
+// Light theme background, the only line to change: warm paper #faf4f0, pure white #ffffff
 @local-paper: #faf4f0;
 
 @local-ink: #1f1b16;
@@ -16,15 +16,40 @@
     "Source Han Serif SC", serif;
 }
 
-// Light palette, replacing upstream's dark vscode-colors.less (commented out in style.less)
-// Applies to the VS Code preview only; HTML and PDF exports are unaffected
+// Colors follow the active VS Code theme. The webview host keeps vscode-dark or vscode-light on
+// <body> and updates it live, so switching needs no reload. Only the preview is affected: exports
+// have no such class and no data-for="preview".
+
+// Dark themes reuse upstream's palette unchanged. :root is the wrapper so its body:has() rule still
+// matches, and :where() adds no specificity so its rules rank exactly as they do upstream.
+:where(:root:has(body.vscode-dark)) {
+  @import "src/css/vscode-colors.less";
+}
+
+// Colors for the components below. Less variables are resolved at compile time and cannot switch,
+// so these are custom properties, light by default.
+.markdown-preview.markdown-preview {
+  --mpe-link: @{local-link};
+  --mpe-muted: @{local-muted};
+  --mpe-line: @{local-line};
+  --mpe-code-bg: @{local-code-bg};
+}
+
+:root:has(body.vscode-dark) .markdown-preview.markdown-preview {
+  --mpe-link: #88bfff;
+  --mpe-muted: #a6a6a6;
+  --mpe-line: #383838;
+  --mpe-code-bg: #202020;
+}
+
 @media screen {
-  body:has(.markdown-preview[data-for="preview"]) {
+  // Light palette
+  body:not(.vscode-dark):has(.markdown-preview[data-for="preview"]) {
     background-color: @local-paper;
     color-scheme: light;
   }
 
-  .markdown-preview.markdown-preview[data-for="preview"] {
+  body:not(.vscode-dark) .markdown-preview.markdown-preview[data-for="preview"] {
     background-color: @local-paper;
     color: @local-ink;
 
@@ -47,25 +72,26 @@
       border-left-color: @local-line;
     }
 
-    // The zebra stripes and rules of vue.css are cool gray
+    pre {
+      background-color: @local-code-bg;
+    }
+  }
+
+  // Both modes: light surfaces from vue.css and Prism default.css that neither palette overrides
+  .markdown-preview.markdown-preview[data-for="preview"] {
     hr {
-      border-bottom-color: @local-line;
+      border-bottom-color: var(--mpe-line);
     }
 
     :is(td, th) {
-      border-color: @local-line;
+      border-color: var(--mpe-line);
     }
 
     tr {
       background-color: transparent;
-      border-top-color: @local-line;
+      border-top-color: var(--mpe-line);
     }
 
-    pre {
-      background-color: @local-code-bg;
-    }
-
-    // The white operator background and white text shadow of Prism default.css look dirty on a tinted code block
     :is(code, pre) {
       text-shadow: none;
     }
@@ -119,19 +145,19 @@
       margin-bottom: -1px;
       padding: 0.4em 1em;
       border-bottom: 2px solid transparent;
-      color: @local-muted;
+      color: var(--mpe-muted);
       font-size: 0.9em;
       cursor: pointer;
     }
 
     > input:checked + label {
-      border-bottom-color: @local-link;
-      color: @local-link;
+      border-bottom-color: var(--mpe-link);
+      color: var(--mpe-link);
       font-weight: 600;
     }
 
     > input:focus-visible + label {
-      outline: 1px solid @local-link;
+      outline: 1px solid var(--mpe-link);
     }
 
     > .mpe-tab-panel {
@@ -139,7 +165,7 @@
       order: 1;
       width: 100%;
       padding-top: 0.6em;
-      border-top: 1px solid @local-line;
+      border-top: 1px solid var(--mpe-line);
     }
 
     > input:checked + label + .mpe-tab-panel {
@@ -162,8 +188,8 @@
   .mpe-code-title {
     margin-top: 1em;
     padding: 0.4em 1em;
-    border-bottom: 1px solid @local-line;
-    background-color: @local-code-bg;
+    border-bottom: 1px solid var(--mpe-line);
+    background-color: var(--mpe-code-bg);
     font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
     font-size: 0.85em;
 

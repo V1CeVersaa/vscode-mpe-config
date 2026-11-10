@@ -2,6 +2,8 @@
 
 默认配置位于 `~/.local/state/crossnote/`
 
+预览的亮色和暗色配色跟随 VS Code 当前主题。
+
 - `style.less` 按顺序加载 `src/css/` 中的 Less 模块
 - `config.js` 配置数学公式与 Mermaid
 - `parser.js` 为 Makefile 自动生成的 mpe 入口
