@@ -1,0 +1,174 @@
+// 本机覆盖：上游 vscode-mpe-config 之外的调整
+
+// 预览底色，只改这一行：暖纸色 #fbf6e9，纯白 #ffffff
+@local-paper: #fbf6e9;
+
+@local-ink: #1f1b16;
+@local-link: #2e67d3;
+@local-muted: mix(@local-ink, @local-paper, 75%);
+@local-code-bg: mix(#000, @local-paper, 5%);
+@local-line: mix(#000, @local-paper, 14%);
+
+// 本机没有 FZYaSong-R-GBK，上游字体栈也没有通用兜底，中文正文会落到系统黑体
+// 这里接上思源宋体（上游本来就用它做全角括号）；以后装了方正雅宋会自动优先
+.markdown-preview.markdown-preview {
+  font-family: "Iowan Old Style", "MPE CJK Brackets", "FZYaSong-R-GBK",
+    "Source Han Serif SC", serif;
+}
+
+// 浅色配色：取代上游的深色 vscode-colors.less（style.less 里已注释掉）
+// 只作用于 VS Code 预览，导出 HTML / PDF 不受影响
+@media screen {
+  body:has(.markdown-preview[data-for="preview"]) {
+    background-color: @local-paper;
+    color-scheme: light;
+  }
+
+  .markdown-preview.markdown-preview[data-for="preview"] {
+    background-color: @local-paper;
+    color: @local-ink;
+
+    // vue.css 的蓝灰标题、绿链接、灰斜体和冷灰引用块在暖底上不协调，对比度也偏低
+    :is(h1, h2, h3, h4, h5, strong, dt, th):not(.mermaid *) {
+      color: @local-ink;
+    }
+
+    a {
+      color: @local-link;
+    }
+
+    em {
+      color: inherit;
+    }
+
+    blockquote {
+      color: @local-muted;
+      background-color: @local-code-bg;
+      border-left-color: @local-line;
+    }
+
+    // vue.css 的隔行浅底和线条是冷灰色
+    hr {
+      border-bottom-color: @local-line;
+    }
+
+    :is(td, th) {
+      border-color: @local-line;
+    }
+
+    tr {
+      background-color: transparent;
+      border-top-color: @local-line;
+    }
+
+    pre {
+      background-color: @local-code-bg;
+    }
+
+    // Prism default.css 的运算符白底和白色文字阴影，在带底色的代码块上会发脏
+    :is(code, pre) {
+      text-shadow: none;
+    }
+
+    .token {
+      background: transparent;
+    }
+  }
+}
+
+// MkDocs Material 语法的样式，配合 src/js/material.js
+.markdown-preview.markdown-preview {
+  details.admonition > summary.admonition-title {
+    position: relative;
+    padding-right: 2.5rem;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::after {
+      content: "›";
+      position: absolute;
+      top: 50%;
+      right: 1rem;
+      font-size: 1.4em;
+      line-height: 1;
+      transform: translateY(-50%);
+      transition: transform 0.15s;
+    }
+  }
+
+  details.admonition[open] > summary.admonition-title::after {
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  .mpe-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1em 0;
+
+    > input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    > label {
+      margin-bottom: -1px;
+      padding: 0.4em 1em;
+      border-bottom: 2px solid transparent;
+      color: @local-muted;
+      font-size: 0.9em;
+      cursor: pointer;
+    }
+
+    > input:checked + label {
+      border-bottom-color: @local-link;
+      color: @local-link;
+      font-weight: 600;
+    }
+
+    > input:focus-visible + label {
+      outline: 1px solid @local-link;
+    }
+
+    > .mpe-tab-panel {
+      display: none;
+      order: 1;
+      width: 100%;
+      padding-top: 0.6em;
+      border-top: 1px solid @local-line;
+    }
+
+    > input:checked + label + .mpe-tab-panel {
+      display: block;
+    }
+  }
+
+  .twemoji {
+    display: inline-flex;
+    height: 1.2em;
+    vertical-align: text-top;
+
+    svg {
+      width: 1.2em;
+      height: 1.2em;
+      fill: currentColor;
+    }
+  }
+
+  .mpe-code-title {
+    margin-top: 1em;
+    padding: 0.4em 1em;
+    border-bottom: 1px solid @local-line;
+    background-color: @local-code-bg;
+    font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+    font-size: 0.85em;
+
+    + pre {
+      margin-top: 0;
+    }
+  }
+}

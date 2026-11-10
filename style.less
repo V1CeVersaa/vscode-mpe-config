@@ -12,10 +12,13 @@
 // @import "src/css/old-report.less";
 
 // vscode 编辑器配色
-@import "src/css/vscode-colors.less";
+// @import "src/css/vscode-colors.less";
 
 // 表格样式修正
 @import "src/css/tables.less";
 
 // 自适应标题编号
 @import "src/css/heading-numbering.less";
+
+// 本机覆盖（文件不在上游仓库内，不存在时自动跳过）
+@import (optional) "local.less";
