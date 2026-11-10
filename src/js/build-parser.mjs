@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// 将本地 CommonJS 模块合并成 MPE 沙箱可读取的单个对象表达式
+// Bundles the local CommonJS modules into one object expression readable by the MPE sandbox
 import { readFileSync, watch, writeFileSync } from "node:fs";
 import { dirname, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -75,9 +75,9 @@ function renderUpstreamNotice() {
 
 function renderParser(modules, entryName) {
   return `// SPDX-License-Identifier: AGPL-3.0-only AND NCSA
-// 自动生成，源码入口：src/js/parser.js；构建命令：make
+// Generated file. Source entry: src/js/parser.js; build command: make
 /*
-上游模板的版权、许可条件及免责声明：
+Copyright, license terms and disclaimer of the upstream template:
 
 ${renderUpstreamNotice()}
 */
@@ -112,7 +112,7 @@ function buildParser() {
   const { modules, entryName } = collectModules(entryFile);
   const output = renderParser(modules, entryName);
 
-  // 全部源码加载和语法检查完成后，再写入 MPE 使用的文件
+  // Write the file MPE uses only after all sources have loaded and passed the syntax check
   new Script(output, { filename: outputFile });
   writeFileSync(outputFile, output);
   dependencies = new Set(modules.keys());

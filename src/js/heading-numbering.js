@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// 标题编号：整篇结构通过校验后，才添加显示编号
-// 各分支可分别跳级；每个父标题的直接子标题须使用相同的 HTML 等级
+// Heading numbers: displayed only after the whole document structure passes validation
+// Branches may skip levels independently; the direct children of a heading must share one HTML level
 
 const tagSource = [
   String.raw`<!--[\s\S]*?-->`,
@@ -70,17 +70,17 @@ const entities = {
 
 const chineseDigits = "零〇一二三四五六七八九十百千万壹贰叁肆伍陆柒捌玖拾佰仟";
 const manualNumberPatterns = [
-  // 阿拉伯数字：1.2、1.、1）以及带空格的 1 标题
+  // Arabic numerals: 1.2, 1., 1) and "1 Title" with a space
   String.raw`\d+(?:[.．]\d+)+(?=\s|$|[.．、:：)）])`,
   String.raw`\d+[.．、)）](?!\d)`,
   String.raw`\d{1,2}\s+\S`,
 
-  // 字母、罗马数字和中文数字
+  // Letters, Roman numerals and Chinese numerals
   String.raw`[A-Za-z][.．、)）]\s*\S`,
   String.raw`[IVXLCDMivxlcdm]+[.．、)）]\s*\S`,
   String.raw`[${chineseDigits}]+[、.．)）]`,
 
-  // 括号编号、章节编号和带圈数字
+  // Parenthesized numbers, chapter numbers and circled numbers
   String.raw`[（(](?:\d+|[A-Za-z]|[IVXLCDMivxlcdm]+|[${chineseDigits}]+)[）)]`,
   String.raw`第[\d${chineseDigits}]+[章节篇部卷]`,
   String.raw`[①-⑳㉑-㉟㊱-㊿❶-❿]`,
@@ -113,7 +113,7 @@ function headingText(markup) {
     .trim();
 }
 
-// 记录标题的原始位置，后续只在起始标签上添加编号属性
+// Record each heading's original position; only its opening tag receives the number attribute later
 function collectHeadings(html) {
   const tags = new RegExp(tagSource, "gi");
   const ancestors = [];
@@ -183,7 +183,7 @@ function collectHeadings(html) {
   return heading ? null : headings;
 }
 
-// 根据实际父子关系计数；一级标题建立新的编号起点
+// Count by actual parent-child relations; an h1 starts a new numbering scope
 function assignNumbers(headings) {
   const root = {
     level: 0,

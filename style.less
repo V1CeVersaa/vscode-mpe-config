@@ -1,24 +1,24 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Markdown Preview Enhanced：样式入口
+// Markdown Preview Enhanced: style entry point
 // https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css
 
-// 通用排版与字体配置
+// General typography and font configuration
 @import "src/css/base.less";
 
-// 中西文间距与相邻标点修正（需要手动加载 heti.js）
+// CJK-Latin spacing and adjacent punctuation fixes (requires loading heti.js manually)
 @import "src/css/heti.less";
 
-// 旧实验报告样式归档（默认不加载）
+// Archive of the old lab report style (not loaded by default)
 // @import "src/css/old-report.less";
 
-// vscode 编辑器配色
+// VS Code editor palette
 // @import "src/css/vscode-colors.less";
 
-// 表格样式修正
+// Table style fixes
 @import "src/css/tables.less";
 
-// 自适应标题编号
+// Adaptive heading numbers
 @import "src/css/heading-numbering.less";
 
-// 本机覆盖（文件不在上游仓库内，不存在时自动跳过）
+// Local overrides (not part of upstream; skipped when the file is missing)
 @import (optional) "local.less";

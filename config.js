@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only AND NCSA
 // Copyright (c) 2017 ~ 2023 Yiyi Wang. All rights reserved.
-// 模板来源：Crossnote 0.9.42
-// 上游模板采用 NCSA；本地新增配置采用 AGPL-3.0-only
+// Template source: Crossnote 0.9.42
+// The upstream template is under NCSA; locally added configuration is under AGPL-3.0-only
 ({
   katexConfig: {
     macros: {

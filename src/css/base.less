@@ -3,7 +3,7 @@
  * License: https://www.gnu.org/licenses/agpl-3.0.html
  */
 
-// 全角括号字形：思源宋体，分别匹配常规与粗体
+// Full-width bracket glyphs: Source Han Serif, matching regular and bold weights
 @font-face {
   font-family: "MPE CJK Brackets";
   src: local("Source Han Serif SC"), local("SourceHanSerifSC-Regular");
@@ -21,14 +21,14 @@
 }
 
 
-// 正文字体与渲染
+// Body font and rendering
 .markdown-preview.markdown-preview {
   font-family: "Iowan Old Style", "MPE CJK Brackets", "FZYaSong-R-GBK";
   text-rendering: optimizeLegibility;
   color: #000;
 }
 
-// 代码字体
+// Code font
 .markdown-preview code,
 .markdown-preview pre {
   font-family: "SF Mono", "JetBrains Mono", Consolas, "Microsoft YaHei UI",
@@ -36,14 +36,14 @@
   page-break-inside: auto;
 }
 
-// Mermaid 继承正文的字体
+// Mermaid inherits the body font
 .markdown-preview .mermaid,
 .markdown-preview .mermaid svg,
 .markdown-preview .mermaid svg * {
   font-family: inherit !important;
 }
 
-// 行内代码的背景、留白与字号
+// Inline code background, padding and size
 html body code {
   background-color: transparent;
   padding: 0;
@@ -54,7 +54,7 @@ html body code::after, html body code::before {
   content: "";
 }
 
-// 打印时的代码换行
+// Code wrapping when printing
 @media print {
   code[class*="language-"],
   pre[class*="language-"],

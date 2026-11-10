@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// 表格布局：识别列类型，添加布局属性和滚动容器
-// 单元格内容保持原样，样式由 tables.less 控制
+// Table layout: classifies column types, adds layout attributes and a scroll container
+// Cell content stays untouched; styling lives in tables.less
 
 const numberPattern =
   /^[+−-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?\s*(?:%|[KMGT]?i?B|ms|s)?$/i;
